@@ -164,81 +164,6 @@ static void dump_hash_auth(unsigned char *hash_buf)
 
 
 
-static size_t fixSignalStrength(const void* response, size_t datalen) {
-    RIL_SignalStrength_v10* rilResponse = (RIL_SignalStrength_v10*)response;
-
-    ALOGD("%s: fixSignalStrength - size datalen %d", __func__, sizeof(RIL_SignalStrength_v10));
-    
-    // LTE  /* LTE_SignalStrength Valid values are (0-31, 99) as defined in TS 27.007 8.5 */
-    if (rilResponse->LTE_SignalStrength.rsrp >= -97) {
-        rilResponse->LTE_SignalStrength.signalStrength = 63;
-    } else if (rilResponse->LTE_SignalStrength.rsrp >= -105) {
-        rilResponse->LTE_SignalStrength.signalStrength = 10;
-    } else if (rilResponse->LTE_SignalStrength.rsrp >= -113) {
-        rilResponse->LTE_SignalStrength.signalStrength = 5;
-    } else if (rilResponse->LTE_SignalStrength.rsrp >= -125) {
-        rilResponse->LTE_SignalStrength.signalStrength = 3;
-    } else if (rilResponse->LTE_SignalStrength.rsrp >= -44) {
-        rilResponse->LTE_SignalStrength.signalStrength = 64;
-     }
-
-    // EvDO
-    if (rilResponse->EVDO_SignalStrength.dbm >= -89) {
-        rilResponse->EVDO_SignalStrength.dbm = -65;
-        rilResponse->EVDO_SignalStrength.signalNoiseRatio = 7;
-    } else if (rilResponse->EVDO_SignalStrength.dbm >= -99) {
-        rilResponse->EVDO_SignalStrength.dbm = -75;
-        rilResponse->EVDO_SignalStrength.signalNoiseRatio = 5;
-    } else if (rilResponse->EVDO_SignalStrength.dbm >= -106) {
-        rilResponse->EVDO_SignalStrength.dbm = -90;
-        rilResponse->EVDO_SignalStrength.signalNoiseRatio = 3;
-    } else if (rilResponse->EVDO_SignalStrength.dbm >= -112) {
-        rilResponse->EVDO_SignalStrength.dbm = -105;
-        rilResponse->EVDO_SignalStrength.signalNoiseRatio = 1;
-    } else {
-        rilResponse->EVDO_SignalStrength.dbm = -999;
-        rilResponse->EVDO_SignalStrength.signalNoiseRatio = -999;
-    }
-
-    // CDMA
-    if (rilResponse->CDMA_SignalStrength.dbm >= -89) {
-        rilResponse->CDMA_SignalStrength.dbm = -75;
-        rilResponse->CDMA_SignalStrength.ecio = -90;
-    } else if (rilResponse->CDMA_SignalStrength.dbm >= -99) {
-        rilResponse->CDMA_SignalStrength.dbm = -85;
-        rilResponse->CDMA_SignalStrength.ecio = -110;
-    } else if (rilResponse->CDMA_SignalStrength.dbm >= -106) {
-        rilResponse->CDMA_SignalStrength.dbm = -95;
-        rilResponse->CDMA_SignalStrength.ecio = -130;
-    } else if (rilResponse->CDMA_SignalStrength.dbm >= -112) {
-        rilResponse->CDMA_SignalStrength.dbm = -100;
-        rilResponse->CDMA_SignalStrength.ecio = -130;
-    } else {
-        rilResponse->CDMA_SignalStrength.dbm = -100;
-        rilResponse->CDMA_SignalStrength.ecio = -150;
-    }
-
-    // GSM
-    if (rilResponse->GW_SignalStrength.signalStrength >= -89) {
-        rilResponse->GW_SignalStrength.signalStrength = 12;
-    } else if (rilResponse->GW_SignalStrength.signalStrength >= -97) {
-        rilResponse->GW_SignalStrength.signalStrength = 8;
-    } else if (rilResponse->GW_SignalStrength.signalStrength >= -103) {
-        rilResponse->GW_SignalStrength.signalStrength = 5;
-    } else {
-        rilResponse->GW_SignalStrength.signalStrength = 0;
-    }
-
-    if (rilResponse->GW_SignalStrength.signalStrength != -1) {
-        rilResponse->GW_SignalStrength.signalStrength =
-                -(rilResponse->GW_SignalStrength.signalStrength - 113) / 2;
-    }
-
-    return sizeof(RIL_SignalStrength_v10);
-}
-
-
-
 /***************************** to HAL - size = 56 - RIL_SignalStrength_v10* rilResponse
   
   *(undefined4 *)(param_3 + 8) = 0x7fffffff;
@@ -351,9 +276,9 @@ int convertRilSignalStrengthToHal_1_4(const void* response, size_t responseLen) 
    // convertRilSignalStrengthToHal_1_4: convertRilSignalStrengthToHal : responseLen 104 - sizeof 108     
    RLOGD("%s: convertRilSignalStrengthToHal v1.4 :. responseLen %d - sizeof %d ", __func__, responseLen, sizeof(signalStrength));
 
-   dump_hash_auth((unsigned char *)response);
-   dump_hash_auth((unsigned char *)response+0x20);
-   dump_hash_auth((unsigned char *)response+0x40);
+   //dump_hash_auth((unsigned char *)response);
+   //dump_hash_auth((unsigned char *)response+0x20);
+   //dump_hash_auth((unsigned char *)response+0x40);
 
    if (*(int *)((long)response + 0x30) + 1U < 2) *(int32_t *)((long)response + 0x30) = 0x7fffffff;
    iVar1 = *(int *)((long)response + 0x34);
@@ -625,7 +550,7 @@ extern "C" void RIL_onUnsolicitedResponse(int unsolResponse, const void* data, s
             ALOGD("%s: RIL_UNSOL_VOICE_RADIO_TECH_CHANGED - datalen %lu", __func__, (unsigned long)datalen);
             break;
         default:
-           ALOGI("%s: Iceows receive unsolResponse %d code for modem %d ", __func__, unsolResponse, modemid);
+           ALOGI("%s: Rilv4 receive unsolResponse %d code for modem %d ", __func__, unsolResponse, modemid);
     }
     
 
