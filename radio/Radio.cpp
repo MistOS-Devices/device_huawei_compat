@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define LOG_TAG "android.hardware.radio@1.4-service.legacy"
+#define LOG_TAG "android.hardware.radio@1.4-service.huawei"
 
 #include "Radio.h"
 #include "Helpers.h"
@@ -57,13 +57,30 @@
 
 namespace android::hardware::radio::implementation {
 
-Radio::Radio(sp<V1_0::IRadio> realRadio) : mRealRadio(realRadio) {}
+Radio::Radio(sp<V1_0::IRadio> realRadio) : mRealRadio(realRadio) {
+    mSlotId = 1;
+}
 
 // Methods from ::android::hardware::radio::V1_0::IRadio follow.
 Return<void> Radio::setResponseFunctions(const sp<V1_0::IRadioResponse>& radioResponse,
                                          const sp<V1_0::IRadioIndication>& radioIndication) {
+                                         
+    LOG(ERROR) << "Huawei Radio HAL setResponseFunctions";
+                                         
     mRadioResponse->mRealRadioResponse = V1_4::IRadioResponse::castFrom(radioResponse);
     mRadioIndication->mRealRadioIndication = V1_4::IRadioIndication::castFrom(radioIndication);
+
+    // We also need to do some funny for HuaweiRadio here.
+    /*
+    mHuaweiRadioResponse = new HuaweiRadioResponseV2(
+        V1_4::IRadioResponse::castFrom(radioResponse).withDefault(nullptr));
+    mHuaweiRadioIndication = new HuaweiRadioIndicationV2(
+        V1_4::IRadioIndication::castFrom(radioIndication).withDefault(nullptr));
+    auto svc = IHuaweiRadio::getService("slot" + (mSlotId != 1 ? std::to_string(mSlotId) : ""));
+    svc->setResponseFunctionsHuawei(mHuaweiRadioResponse, mHuaweiRadioIndication);
+    */
+
+    // Finally, set up radio
     WRAP_V1_0_CALL(setResponseFunctions, mRadioResponse, mRadioIndication);
 }
 

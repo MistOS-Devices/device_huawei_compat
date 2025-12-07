@@ -13,6 +13,11 @@
 #include "RadioIndication.h"
 #include "RadioResponse.h"
 
+#include <vendor/huawei/hardware/radio/2.0/IHuaweiRadio.h>
+#include "HuaweiRadioIndicationV2.h"
+#include "HuaweiRadioResponseV2.h"
+
+
 namespace android::hardware::radio::implementation {
 
 using ::android::sp;
@@ -22,6 +27,12 @@ using ::android::hardware::hidl_string;
 using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
+
+using vendor::huawei::hardware::radio::V2_0::IHuaweiRadio;
+using vendor::huawei::hardware::radio::V2_0::IHuaweiRadioIndicationV2;
+using vendor::huawei::hardware::radio::V2_0::IHuaweiRadioResponseV2;
+using vendor::huawei::hardware::radio::implementation::HuaweiRadioIndicationV2;
+using vendor::huawei::hardware::radio::implementation::HuaweiRadioResponseV2;
 
 struct Radio : public V1_4::IRadio {
   public:
@@ -260,9 +271,12 @@ struct Radio : public V1_4::IRadio {
     Return<void> getSignalStrength_1_4(int32_t serial) override;
 
   private:
+    int mSlotId;
     sp<V1_0::IRadio> mRealRadio;
     sp<RadioResponse> mRadioResponse = new RadioResponse();
     sp<RadioIndication> mRadioIndication = new RadioIndication();
+    //sp<HuaweiRadioResponseV2> mHuaweiRadioResponse;
+    //sp<HuaweiRadioIndicationV2> mHuaweiRadioIndication;
 
     sp<V1_1::IRadio> getRealRadio_V1_1();
     sp<V1_2::IRadio> getRealRadio_V1_2();

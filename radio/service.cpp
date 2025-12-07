@@ -26,12 +26,15 @@ using android::OK;
 using android::sp;
 using android::status_t;
 
-#define MAX_SLOT_ID 4
 
 int main() {
     // Note: Starts from slot 1
     std::map<int, sp<V1_4::IRadio>> slotIdToRadio;
 
+    LOG(INFO) << "Huawei Radio HAL service try to start.";
+    
+    // Huawei have max 2 sim cards
+    int MAX_SLOT_ID = 2;
     for (int slotId = 1; slotId <= MAX_SLOT_ID; slotId++) {
         sp<V1_0::IRadio> realRadio = V1_0::IRadio::getService("slot" + std::to_string(slotId));
         if (realRadio == nullptr) {
@@ -49,12 +52,12 @@ int main() {
         linkDeathToDeath(realRadio);
     }
 
-    configureRpcThreadpool(1, true);
+    configureRpcThreadpool(MAX_SLOT_ID * 2 + 2, true);
 
     for (auto const& [slotId, radio] : slotIdToRadio) {
         status_t status = radio->registerAsService("slot" + std::to_string(slotId));
         if (status != OK) {
-            LOG(ERROR) << "Cannot register Radio HAL service for slot " << slotId;
+            LOG(ERROR) << "Cannot register Huawei Radio HAL service for slot " << slotId;
             return 1;
         }
     }
