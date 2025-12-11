@@ -59,6 +59,12 @@ namespace android::hardware::radio::implementation {
 
 Radio::Radio(sp<V1_0::IRadio> realRadio) : mRealRadio(realRadio) {
     mSlotId = 1;
+    LOG(WARNING) << "Slot = 1"; 
+}
+
+Radio::Radio(sp<V1_0::IRadio> realRadio, int slotId) : mRealRadio(realRadio) {
+    mSlotId = slotId;
+    LOG(WARNING) << "slotId"; 
 }
 
 // Methods from ::android::hardware::radio::V1_0::IRadio follow.
@@ -76,6 +82,7 @@ Return<void> Radio::setResponseFunctions(const sp<V1_0::IRadioResponse>& radioRe
         V1_4::IRadioResponse::castFrom(radioResponse).withDefault(nullptr));
     mHuaweiRadioIndication = new HuaweiRadioIndicationV2(
         V1_4::IRadioIndication::castFrom(radioIndication).withDefault(nullptr));
+ 
     auto svc = IHuaweiRadio::getService("slot" + (mSlotId != 1 ? std::to_string(mSlotId) : ""));
     svc->setResponseFunctionsHuawei(mHuaweiRadioResponse, mHuaweiRadioIndication);
     */
@@ -795,6 +802,8 @@ Return<void> Radio::setupDataCall_1_4(int32_t serial, V1_4::AccessNetwork access
                                       bool roamingAllowed, V1_2::DataRequestReason reason,
                                       const hidl_vec<hidl_string>& addresses,
                                       const hidl_vec<hidl_string>& dnses) {
+                                      
+    LOG(WARNING) << "setupDataCall_1_4"; 
     MAYBE_WRAP_V1_4_CALL(setupDataCall_1_4, serial, accessNetwork, dataProfileInfo, roamingAllowed,
                          reason, addresses, dnses);
 
@@ -807,6 +816,8 @@ Return<void> Radio::setupDataCall_1_4(int32_t serial, V1_4::AccessNetwork access
 
 Return<void> Radio::setInitialAttachApn_1_4(int32_t serial,
                                             const V1_4::DataProfileInfo& dataProfileInfo) {
+                                            
+    LOG(WARNING) << "setInitialAttachApn_1_4"; 
     MAYBE_WRAP_V1_4_CALL(setInitialAttachApn_1_4, serial, dataProfileInfo);
 
     WRAP_V1_0_CALL(setInitialAttachApn, serial, Get1_0DataProfileInfo(dataProfileInfo),
@@ -815,6 +826,8 @@ Return<void> Radio::setInitialAttachApn_1_4(int32_t serial,
 
 Return<void> Radio::setDataProfile_1_4(int32_t serial,
                                        const hidl_vec<V1_4::DataProfileInfo>& profiles) {
+ 
+    LOG(WARNING) << "setDataProfile_1_4"; 
     MAYBE_WRAP_V1_4_CALL(setDataProfile_1_4, serial, profiles);
 
     std::vector<V1_0::DataProfileInfo> legacyProfiles;
@@ -863,6 +876,9 @@ Return<void> Radio::getPreferredNetworkTypeBitmap(int32_t serial) {
 
 Return<void> Radio::setPreferredNetworkTypeBitmap(
         int32_t serial, hidl_bitfield<V1_4::RadioAccessFamily> networkTypeBitmap) {
+        
+    LOG(WARNING) << "setPreferredNetworkTypeBitmap"; 
+
     MAYBE_WRAP_V1_4_CALL(setPreferredNetworkTypeBitmap, serial, networkTypeBitmap);
 
     if(networkTypeBitmap & GSMBITS)
@@ -953,6 +969,8 @@ Return<void> Radio::setPreferredNetworkTypeBitmap(
 Return<void> Radio::setAllowedCarriers_1_4(int32_t serial,
                                            const V1_4::CarrierRestrictionsWithPriority& carriers,
                                            V1_4::SimLockMultiSimPolicy multiSimPolicy) {
+
+    LOG(WARNING) << "setAllowedCarriers_1_4";
     MAYBE_WRAP_V1_4_CALL(setAllowedCarriers_1_4, serial, carriers, multiSimPolicy);
 
     bool isAllCarriersAllowed = carriers.allowedCarriers.size() == 0 &&
@@ -978,6 +996,9 @@ Return<void> Radio::getAllowedCarriers_1_4(int32_t serial) {
 }
 
 Return<void> Radio::getSignalStrength_1_4(int32_t serial) {
+
+    LOG(WARNING) << "getSignalStrength_1_4";
+
     MAYBE_WRAP_V1_4_CALL(getSignalStrength_1_4, serial);
     WRAP_V1_0_CALL(getSignalStrength, serial);
 }

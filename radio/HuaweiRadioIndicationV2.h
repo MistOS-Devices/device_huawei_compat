@@ -25,7 +25,7 @@ using ::android::hardware::radio::V1_4::IRadioIndication;
 using ::android::hardware::radio::V1_0::RadioIndicationType;
 
 using ::vendor::huawei::hardware::radio::V2_0::RILUnsolMsgPayload;
-
+using ::vendor::huawei::hardware::radio::V2_0::IHuaweiRadioIndicationV2;
 
 struct HuaweiRadioIndicationV2 : public IHuaweiRadioIndicationV2 {
 public:

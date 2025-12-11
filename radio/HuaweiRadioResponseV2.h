@@ -29,6 +29,7 @@ using ::android::hardware::radio::V1_0::IccIoResult;
 using ::vendor::huawei::hardware::radio::V2_0::RspMsgPayload;
 using ::vendor::huawei::hardware::radio::V2_0::RILPreferredPLMNSelector;
 using ::vendor::huawei::hardware::radio::V2_0::IccIoResultEx;
+using ::vendor::huawei::hardware::radio::V2_0::IHuaweiRadioResponseV2;
 
 
 struct HuaweiRadioResponseV2 : public IHuaweiRadioResponseV2 {

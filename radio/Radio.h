@@ -37,6 +37,7 @@ using vendor::huawei::hardware::radio::implementation::HuaweiRadioResponseV2;
 struct Radio : public V1_4::IRadio {
   public:
     Radio(sp<V1_0::IRadio> realRadio);
+    Radio(sp<V1_0::IRadio> realRadio, int slotId);
 
     // Methods from ::android::hardware::radio::V1_0::IRadio follow.
     Return<void> setResponseFunctions(const sp<V1_0::IRadioResponse>& radioResponse,

@@ -20,18 +20,19 @@ using namespace android::hardware::hidl_utils;
 using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 
-using android::hardware::radio::implementation::Radio;
-
 using android::OK;
 using android::sp;
 using android::status_t;
+
+using android::hardware::radio::V1_4::IRadio;
+using android::hardware::radio::implementation::Radio;
 
 
 int main() {
     // Note: Starts from slot 1
     std::map<int, sp<V1_4::IRadio>> slotIdToRadio;
 
-    LOG(INFO) << "Huawei Radio HAL service try to start.";
+    LOG(WARNING) << "Huawei Radio HAL service try to start.";
     
     // Huawei have max 2 sim cards
     int MAX_SLOT_ID = 2;
@@ -62,10 +63,10 @@ int main() {
         }
     }
 
-    LOG(INFO) << "Huawei Radio HAL service ready.";
+    LOG(WARNING) << "Huawei Radio HAL service ready.";
 
     joinRpcThreadpool();
 
-    LOG(INFO) << "Huawei Radio HAL service failed to join thread pool.";
+    LOG(WARNING) << "Huawei Radio HAL service failed to join thread pool.";
     return 1;
 }
