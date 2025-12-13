@@ -370,23 +370,35 @@ LAB_00172cc8:
    *(int32_t *)((long)response + 0xc) = signalStrength.wcdma.signalStrength;
    
 
-    /* -------------------------------- CDMA -------------------------------------------------------------------------------*/
-    signalStrength.cdma.dbm = *(int32_t *)((long)response + 0x1c);
-    signalStrength.cdma.ecio = *(int32_t *)((long)response + 0x20);
+   /* -------------------------------- CDMA -------------------------------------------------------------------------------*/
+   signalStrength.cdma.dbm = *(int32_t *)((long)response + 0x1c);
+   signalStrength.cdma.ecio = *(int32_t *)((long)response + 0x20);
 
-    /* -------------------------------- EVO -------------------------------------------------------------------------------*/
-    // EVO = 3*4  = 12 = 0x24 -> 0x2c
-    signalStrength.evdo.dbm = *(int32_t *)((long)response + 0x24);
-    signalStrength.evdo.ecio = *(int32_t *)((long)response + 0x28);
-    signalStrength.evdo.signalNoiseRatio = *(int32_t *)((long)response + 0x2c);
+   /* -------------------------------- EVO -------------------------------------------------------------------------------*/
+   // EVO = 3*4  = 12 = 0x24 -> 0x2c
+   signalStrength.evdo.dbm = *(int32_t *)((long)response + 0x24);
+   signalStrength.evdo.ecio = *(int32_t *)((long)response + 0x28);
+   signalStrength.evdo.signalNoiseRatio = *(int32_t *)((long)response + 0x2c);
 
-    /* -------------------------------- LTE -------------------------------------------------------------------------------*/
-    signalStrength.lte.signalStrength = *(int32_t *)((long)response + 0x30);
-    signalStrength.lte.rsrp = *(int32_t *)((long)response + 0x34);
-    signalStrength.lte.rsrq = *(int32_t *)((long)response + 0x38);
-    signalStrength.lte.rssnr = *(int32_t *)((long)response + 0x3c);
-    signalStrength.lte.cqi = *(int32_t *)((long)response + 0x40);
-    signalStrength.lte.timingAdvance = *(int32_t *)((long)response + 0x44);
+   /* -------------------------------- LTE -------------------------------------------------------------------------------*/
+   signalStrength.lte.signalStrength = *(int32_t *)((long)response + 0x30);
+   signalStrength.lte.rsrp = *(int32_t *)((long)response + 0x34);
+   signalStrength.lte.rsrq = *(int32_t *)((long)response + 0x38);
+   signalStrength.lte.rssnr = *(int32_t *)((long)response + 0x3c);
+   signalStrength.lte.cqi = *(int32_t *)((long)response + 0x40);
+   signalStrength.lte.timingAdvance = *(int32_t *)((long)response + 0x44);
+    
+   signalStrength.lte.signalStrength = 0x7FFFFFFF;
+   if (signalStrength.lte.rsrp >= -80) {
+        signalStrength.lte.signalStrength = 30; // Excellent - Valid values are (0-31, 99) as defined in TS 27.007 8.5 
+   } else if (signalStrength.lte.rsrp > -90) {
+        signalStrength.lte.signalStrength = 20;
+   } else if (signalStrength.lte.rsrp > -100) {
+        signalStrength.lte.signalStrength = 10;
+   } else if (signalStrength.lte.rsrp <= -100) {
+        signalStrength.lte.signalStrength = 5;
+   }
+   *(int32_t *)((long)response + 0x48) = signalStrength.lte.signalStrength;
     
    /* -------------------------------- TD-SCDMA --------------------------------------------------------------------*/   
    signalStrength.tdscdma.signalStrength = *(int32_t *)((long)response + 0x48); // signalStrength=rssi (not use)
