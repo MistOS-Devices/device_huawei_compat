@@ -11,7 +11,7 @@ BOARD_CUSTOM_BOOTIMG_HAS_RAMDISK ?= true
 #
 # Global Flags
 #
-HW_MKBOOTIMG := $(TARGET_KERNEL_SOURCE)/tools/mkbootimg
+HW_MKBOOTIMG := $(LOCAL_PATH)/mkbootimg
 
 #
 # kernel.img
